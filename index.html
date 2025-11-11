@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>52Rent — Оренда автомобілів</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f6f6f6;
+            color: #111;
+        }
+
+        header {
+            background: white;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        header a {
+            text-decoration: none;
+            margin-left: 25px;
+            color: #111;
+            font-weight: bold;
+        }
+
+        .hero {
+            height: 60vh;
+            background: url("https://images.unsplash.com/photo-1517779894653-4c49f68b4d66?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fGx1eHVyeSUyMGNhcnN8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&q=60&w=600") center/cover no-repeat;
+            display: flex;
+            align-items: center;
+            padding-left: 60px;
+            color: white;
+            text-shadow: 0 2px 6px rgba(0,0,0,0.4);
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            margin: 0;
+        }
+
+        .hero p {
+            font-size: 20px;
+            margin-top: 10px;
+        }
+
+        .hero button {
+            margin-top: 25px;
+            padding: 14px 28px;
+            background: #ff9900;
+            border: none;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .section {
+            width: 85%;
+            margin: 50px auto;
+        }
+
+        h2 {
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        .advantages {
+            display: flex;
+            gap: 25px;
+            margin-top: 25px;
+        }
+
+        .adv-card {
+            background: white;
+            padding: 25px;
+            border-radius: 6px;
+            flex: 1;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+
+        .categories {
+            display: flex;
+            gap: 25px;
+            margin-top: 25px;
+        }
+
+        .cat-card {
+            flex: 1;
+            background: white;
+            border-radius: 6px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        .cat-card img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+        }
+
+        .cat-card h3 {
+            padding: 15px;
+            margin: 0;
+        }
+
+        footer {
+            background: #111;
+            color: white;
+            padding: 30px;
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .contact-box {
+            background:white;
+            padding:25px;
+            border-radius:6px;
+            box-shadow:0 3px 10px rgba(0,0,0,0.05);
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        .contact-box p {
+            margin: 6px 0;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div style="font-size: 20px; font-weight: bold;">52Rent</div>
+
+    <nav>
+        <a href="#">Головна</a>
+        <a href="#">Прокат авто</a>
+        <a href="#">Для бізнесу</a>
+    </nav>
+</header>
+
+<div class="hero">
+    <div>
+        <h1>Оренда авто у Києві</h1>
+        <p>Якісний сервіс. Надійні авто. Чесні ціни.</p>
+        <button>Обрати авто</button>
+    </div>
+</div>
+
+<div class="section">
+    <h2>Наші переваги</h2>
+
+    <div class="advantages">
+        <div class="adv-card">
+            <h3>Швидке оформлення</h3>
+            <p>Всього 5 хвилин — і авто у вас.</p>
+        </div>
+
+        <div class="adv-card">
+            <h3>Страхування включене</h3>
+            <p>Повне КАСКО та цивілка.</p>
+        </div>
+
+        <div class="adv-card">
+            <h3>Чесні ціни</h3>
+            <p>Без прихованих платежів.</p>
+        </div>
+    </div>
+</div>
+
+<div class="section">
+    <h2>Категорії авто</h2>
+
+    <div class="categories">
+        <div class="cat-card">
+            <img src="https://images.unsplash.com/photo-1558199078-4a1337833c93?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NTR8fGxhZGF8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&q=60&w=600" alt="">
+            <h3>Економ</h3>
+        </div>
+
+        <div class="cat-card">
+            <img src="https://images.unsplash.com/photo-1745740622500-cdf49f7e1373?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTM3fHxjb21mb3J0JTIwYXV0b3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&q=60&w=600" alt="">
+            <h3>Комфорт</h3>
+        </div>
+
+        <div class="cat-card">
+            <img src="data:image/jpeg;base64,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" alt="">
+            <h3>Бізнес</h3>
+        </div>
+
+        <div class="cat-card">
+            <img src="https://images.unsplash.com/photo-1506015391300-4802dc74de2e?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8U1VWfGVufDB8fDB8fHww&auto=format&fit=crop&q=60&w=600" alt="">
+            <h3>SUV</h3>
+        </div>
+    </div>
+</div>
+
+<div class="section">
+    <h2>Популярні авто</h2>
+
+    <div class="categories">
+        <div class="cat-card">
+            <img src="https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dG95b3RhJTIwY2Ftcnl8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&q=60&w=600" alt="">
+            <h3>Toyota Camry</h3>
+        </div>
+
+        <div class="cat-card">
+            <img src="https://images.unsplash.com/photo-1560958089-b8a1929cea89?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dGVzbGElMjBtb2RlbCUyMDN8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&q=60&w=600" alt="">
+            <h3>Tesla Model 3</h3>
+        </div>
+
+        <div class="cat-card">
+            <img src="https://images.unsplash.com/photo-1609184166822-bd1f1b991a06?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8Ym13JTIweDV8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&q=60&w=600" alt="">
+            <h3>BMW X5</h3>
+        </div>
+    </div>
+</div>
+
+<div class="section">
+    <h2>Контакти</h2>
+
+    <div class="contact-box">
+        <p><strong>Телефон:</strong> +38 (067) 123 45 67</p>
+        <p><strong>Email:</strong> info@52rent.com</p>
+        <p><strong>Графік роботи:</strong> 09:00 – 21:00, без вихідних</p>
+    </div>
+</div>
+
+<footer>
+    52Rent © 2025 — Оренда автомобілів
+</footer>
+
+</body>
+</html>

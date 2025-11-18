@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>52Rent — Авто</title>
+    <style>
+        body { font-family: Arial; margin: 0; padding: 0; background: #f6f6f6; }
+        .container { width: 80%; margin: 40px auto; background: white; padding: 25px; border-radius: 10px; }
+        img { width: 100%; height: 300px; object-fit: cover; border-radius: 8px; }
+        .price { font-size: 24px; font-weight: bold; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1 id="car-name"></h1>
+    <img id="car-image" src="">
+    <p class="price" id="car-price"></p>
+    <p><b>Бренд:</b> <span id="car-brand"></span></p>
+    <p><b>Рік:</b> <span id="car-year"></span></p>
+    <p><b>Локація:</b> <span id="car-location"></span></p>
+</div>
+
+<script src="api-client.js"></script>
+
+<script>
+    async function loadCar() {
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get("id");
+
+        const car = await apiClient.getCar(id);
+
+        document.getElementById("car-name").textContent = car.name;
+        document.getElementById("car-brand").textContent = car.brand;
+        document.getElementById("car-year").textContent = car.year;
+        document.getElementById("car-location").textContent = car.location;
+        document.getElementById("car-price").textContent = car.price_per_day + " грн/доба";
+
+        document.getElementById("car-image").src =
+            "https://source.unsplash.com/random/800x400?car";
+    }
+
+    loadCar();
+</script>
+
+</body>
+</html>

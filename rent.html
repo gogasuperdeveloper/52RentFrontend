@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>52Rent — Прокат авто</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f6f6f6;
+            color: #111;
+        }
+
+        header {
+            background: white;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        header a {
+            text-decoration: none;
+            margin-left: 25px;
+            color: #111;
+            font-weight: bold;
+        }
+
+        .section {
+            width: 85%;
+            margin: 40px auto;
+        }
+
+        h1 {
+            font-size: 38px;
+            margin-bottom: 20px;
+        }
+
+        .filters {
+            background: white;
+            padding: 20px;
+            border-radius: 6px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .filters select {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        .cars-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+
+        .car-card {
+            background: white;
+            border-radius: 6px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            overflow: hidden;
+            transition: 0.2s;
+        }
+
+        .car-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .car-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+
+        .car-card .info {
+            padding: 15px;
+        }
+
+        .car-card h3 {
+            margin: 0 0 10px 0;
+        }
+
+        .price {
+            font-size: 18px;
+            font-weight: bold;
+            color: #ff9800;
+        }
+
+        .details-btn {
+            margin-top: 10px;
+            display: inline-block;
+            padding: 10px 16px;
+            background: #111;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: 0.2s;
+        }
+
+        .details-btn:hover {
+            background: #333;
+        }
+
+        footer {
+            background: #111;
+            color: white;
+            padding: 30px;
+            margin-top: 40px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div style="font-size: 20px; font-weight: bold;">52Rent</div>
+
+    <nav>
+        <a href="index.html">Головна</a>
+        <a href="rent.html">Прокат авто</a>
+        <a href="business.html">Для бізнесу</a>
+    </nav>
+</header>
+
+<div class="section">
+    <h1>Прокат автомобілів</h1>
+
+    <div class="filters">
+        <select>
+            <option>Категорія</option>
+            <option>Економ</option>
+            <option>Комфорт</option>
+            <option>Бізнес</option>
+            <option>SUV</option>
+        </select>
+
+        <select>
+            <option>Коробка передач</option>
+            <option>Автомат</option>
+            <option>Механіка</option>
+        </select>
+
+        <select>
+            <option>Тип палива</option>
+            <option>Бензин</option>
+            <option>Дизель</option>
+            <option>Електро</option>
+        </select>
+    </div>
+
+    <div class="cars-grid">
+
+    <div class="car-card">
+        <img src="https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?auto=format&fit=crop&q=60&w=600" alt="">
+        <div class="info">
+            <h3>Toyota Camry</h3>
+            <p class="price">1700 грн/доба</p>
+            <a href="car_detail.html?id=1" class="details-btn">Детальніше</a>
+        </div>
+    </div>
+
+    <div class="car-card">
+        <img src="https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&q=60&w=600" alt="">
+        <div class="info">
+            <h3>Tesla Model 3</h3>
+            <p class="price">3000 грн/доба</p>
+            <a href="car_detail.html?id=2" class="details-btn">Детальніше</a>
+        </div>
+    </div>
+
+    <div class="car-card">
+        <img src="https://images.unsplash.com/photo-1609184166822-bd1f1b991a06?auto=format&fit=crop&q=60&w=600" alt="">
+        <div class="info">
+            <h3>BMW X5</h3>
+            <p class="price">2800 грн/доба</p>
+            <a href="car_detail.html?id=3" class="details-btn">Детальніше</a>
+        </div>
+    </div>
+
+</div>
+
+
+    </div>
+</div>
+
+<footer>
+    52Rent © 2025 — Оренда автомобілів
+</footer>
+
+<script src="api-client.js"></script>
+
+</body>
+</html>

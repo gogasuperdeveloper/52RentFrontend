@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>52Rent — Авто</title>
+    <style>
+        body { font-family: Arial; margin: 0; padding: 0; background: #f6f6f6; }
+        .container { width: 80%; margin: 40px auto; background: white; padding: 25px; border-radius: 10px; }
+        img { width: 100%; height: 300px; object-fit: cover; border-radius: 8px; }
+        .price { font-size: 24px; font-weight: bold; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1 id="car-name"></h1>
+    <img id="car-image" src="">
+    <p class="price" id="car-price"></p>
+    <p><b>Бренд:</b> <span id="car-brand"></span></p>
+    <p><b>Рік:</b> <span id="car-year"></span></p>
+    <p><b>Локація:</b> <span id="car-location"></span></p>
+</div>
+
+<script src="api-client.js"></script>
+
+<script>
+    const url = new URLSearchParams(window.location.search);
+    const carId = url.get('id');
+
+    async function loadCar() {
+        const car = await apiClient.getCar(carId);
+
+        console.log('loadCar() response:', car);
+
+        if (!car) {
+            document.querySelector('.container').innerHTML = '<p>Авто не знайдено.</p>';
+            return;
+        }
+
+        document.getElementById('car-image').src =
+    car.images && car.images.length
+        ? 'http://127.0.0.1:8000' + car.images[0].image
+        : 'placeholder.jpg';
+
+        document.getElementById('car-name').innerText = car.name || car.model || '';
+        document.getElementById('car-brand').innerText = car.brand || '';
+        document.getElementById('car-year').innerText = car.year || '';
+        document.getElementById('car-location').innerText = car.location || '';
+
+        function detectPrice(c) {
+            if (!c) return null;
+            const candidates = [
+                'price_per_day', 'pricePerDay', 'daily_price', 'dailyPrice',
+                'price', 'cost_per_day', 'costPerDay', 'rent_price', 'amount'
+            ];
+
+            for (const key of candidates) {
+                if (key in c && c[key] != null) return c[key];
+            }
+
+            if (c.pricing && (c.pricing.price_per_day || c.pricing.price)) return c.pricing.price_per_day ?? c.pricing.price;
+            if (c.prices && (c.prices.daily || c.prices.price_per_day)) return c.prices.daily ?? c.prices.price_per_day;
+
+            return null;
+        }
+
+        const rawPrice = detectPrice(car);
+        const priceText = rawPrice != null && rawPrice !== '' ? `${Number(rawPrice).toLocaleString('uk-UA')} грн/доба` : '—';
+        document.getElementById('car-price').innerText = priceText;
+    }
+
+    loadCar();
+</script>
+
+</body>
+</html>

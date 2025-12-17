@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>52Rent — Мої бронювання</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #ff9900;
+            --primary-dark: #e68a00;
+            --secondary-color: #111;
+            --light-gray: #f6f6f6;
+            --medium-gray: #ddd;
+            --dark-gray: #555;
+            --white: #fff;
+            --error-color: #b00020;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+            --shadow: 0 3px 10px rgba(0,0,0,0.05);
+            --shadow-heavy: 0 6px 20px rgba(0,0,0,0.08);
+            --border-radius: 8px;
+            --transition: all 0.2s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: var(--light-gray);
+            color: var(--secondary-color);
+            line-height: 1.6;
+        }
+
+        .main-header {
+            background: var(--white);
+            padding: 15px 0;
+            border-bottom: 1px solid var(--medium-gray);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--secondary-color);
+            text-decoration: none;
+        }
+
+        .main-nav {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--secondary-color);
+            font-weight: bold;
+            font-size: 16px;
+            transition: var(--transition);
+            padding: 8px 0;
+        }
+
+        .nav-link:hover {
+            color: var(--primary-color);
+        }
+
+        .nav-link.active {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: var(--border-radius);
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-heavy);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary-color);
+            color: var(--white);
+        }
+
+        .btn-danger {
+            background: var(--error-color);
+            color: var(--white);
+        }
+
+        .btn-danger:hover {
+            background: #d32f2f;
+        }
+
+        .btn-success {
+            background: var(--success-color);
+            color: var(--white);
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .notification-badge {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .notification-badge i {
+            font-size: 20px;
+            color: var(--dark-gray);
+        }
+
+        .notification-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--error-color);
+            color: var(--white);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .user-name {
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .user-email {
+            font-size: 12px;
+            color: var(--dark-gray);
+        }
+
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
+                        url('https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
+            background-size: cover;
+            background-position: center;
+            color: var(--white);
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 42px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .hero p {
+            font-size: 18px;
+            margin-bottom: 30px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            opacity: 0.9;
+        }
+
+        .section {
+            padding: 50px 0;
+        }
+
+        .section-title {
+            font-size: 32px;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        .page-description {
+            font-size: 18px;
+            margin-bottom: 40px;
+            color: var(--dark-gray);
+            text-align: center;
+        }
+
+        .filters-container {
+            background: var(--white);
+            padding: 25px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .filter-select {
+            padding: 10px 15px;
+            border: 1px solid var(--medium-gray);
+            border-radius: var(--border-radius);
+            background: var(--white);
+            font-size: 14px;
+            min-width: 180px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--medium-gray);
+            padding-bottom: 10px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            color: var(--dark-gray);
+            transition: var(--transition);
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+        }
+
+        .tab:hover {
+            color: var(--primary-color);
+        }
+
+        .tab.active {
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
+        }
+
+        .bookings-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .booking-card {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: var(--transition);
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .booking-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-heavy);
+        }
+
+        .booking-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--light-gray);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .booking-id {
+            font-weight: bold;
+            color: var(--dark-gray);
+            font-size: 14px;
+        }
+
+        .booking-status {
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .status-pending {
+            background: rgba(255, 193, 7, 0.1);
+            color: #ff9800;
+            border: 1px solid rgba(255, 193, 7, 0.3);
+        }
+
+        .status-confirmed {
+            background: rgba(40, 167, 69, 0.1);
+            color: var(--success-color);
+            border: 1px solid rgba(40, 167, 69, 0.3);
+        }
+
+        .status-active {
+            background: rgba(23, 162, 184, 0.1);
+            color: var(--info-color);
+            border: 1px solid rgba(23, 162, 184, 0.3);
+        }
+
+        .status-completed {
+            background: rgba(108, 117, 125, 0.1);
+            color: #6c757d;
+            border: 1px solid rgba(108, 117, 125, 0.3);
+        }
+
+        .status-cancelled {
+            background: rgba(220, 53, 69, 0.1);
+            color: var(--error-color);
+            border: 1px solid rgba(220, 53, 69, 0.3);
+        }
+
+        .status-payment_pending {
+            background: rgba(255, 152, 0, 0.1);
+            color: #ff9800;
+            border: 1px solid rgba(255, 152, 0, 0.3);
+        }
+
+        .booking-content {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+        }
+
+        .booking-car-info {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .car-image-small {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: var(--border-radius);
+        }
+
+        .car-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .car-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .car-detail {
+            background: var(--light-gray);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: var(--dark-gray);
+        }
+
+        .booking-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .detail-group {
+            margin-bottom: 15px;
+        }
+
+        .detail-label {
+            font-size: 12px;
+            color: var(--dark-gray);
+            text-transform: uppercase;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .detail-value {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .booking-total {
+            color: var(--primary-color);
+            font-size: 20px;
+        }
+
+        .booking-footer {
+            padding: 20px;
+            border-top: 1px solid var(--light-gray);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--light-gray);
+        }
+
+        .booking-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            color: var(--medium-gray);
+            margin-bottom: 20px;
+        }
+
+        .empty-state-title {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: var(--dark-gray);
+        }
+
+        .empty-state-description {
+            color: var(--dark-gray);
+            margin-bottom: 30px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .main-footer {
+            background: var(--secondary-color);
+            color: var(--white);
+            padding: 50px 0 20px;
+            margin-top: 60px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 20px;
+            font-size: 18px;
+            color: var(--white);
+        }
+
+        .footer-section a {
+            color: var(--white);
+            text-decoration: none;
+            display: block;
+            margin-bottom: 10px;
+            opacity: 0.8;
+            transition: var(--transition);
+        }
+
+        .footer-section a:hover {
+            opacity: 1;
+            color: var(--primary-color);
+        }
+
+        .footer-section p {
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            font-size: 14px;
+            opacity: 0.7;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1001;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--white);
+            padding: 40px;
+            border-radius: var(--border-radius);
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--dark-gray);
+        }
+
+        .modal-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: var(--secondary-color);
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mt-30 {
+            margin-top: 30px;
+        }
+
+        .mb-30 {
+            margin-bottom: 30px;
+        }
+
+        .gap-10 {
+            gap: 10px;
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .flex-col {
+            flex-direction: column;
+        }
+
+        .items-center {
+            align-items: center;
+        }
+
+        .justify-between {
+            justify-content: space-between;
+        }
+
+        @media (max-width: 992px) {
+            .booking-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .booking-details {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .main-nav {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 15px;
+            }
+            
+            .booking-footer {
+                flex-direction: column;
+                gap: 15px;
+                align-items: stretch;
+            }
+            
+            .booking-actions {
+                justify-content: center;
+            }
+            
+            .hero h1 {
+                font-size: 32px;
+            }
+            
+            .filter-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .filter-select {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="main-header">
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">52Rent</a>
+                
+                <nav class="main-nav">
+                    <a href="index.html" class="nav-link">Головна</a>
+                    <a href="rent.html" class="nav-link">Прокат авто</a>
+                    <a href="business.html" class="nav-link">Для бізнесу</a>
+                    <a href="bookings.html" class="nav-link active">Мої бронювання</a>
+                    
+                    <div id="auth-buttons" class="user-menu">
+                        <a href="login.html" class="btn btn-outline">Увійти</a>
+                    </div>
+                    
+                    <div id="user-menu" class="user-menu hidden">
+                        <div class="notification-badge">
+                            <i class="fas fa-bell"></i>
+                            <span class="notification-count" id="notification-count">0</span>
+                        </div>
+                        <div class="user-avatar" id="user-avatar">U</div>
+                        <div class="user-info">
+                            <span class="user-name" id="user-name">Користувач</span>
+                        </div>
+                        <button class="btn btn-outline" id="logout-btn">Вийти</button>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Мої бронювання</h1>
+            <p>Переглядайте та керуйте усіма вашими бронюваннями авто</p>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container">
+            <div class="filters-container">
+                <div class="filter-group">
+                    <select id="status-filter" class="filter-select">
+                        <option value="">Всі статуси</option>
+                        <option value="pending">Очікує підтвердження</option>
+                        <option value="confirmed">Підтверджено</option>
+                        <option value="active">Активне</option>
+                        <option value="completed">Завершено</option>
+                        <option value="cancelled">Скасовано</option>
+                        <option value="payment_pending">Очікує оплати</option>
+                    </select>
+                    
+                    <select id="sort-filter" class="filter-select">
+                        <option value="newest">Спочатку нові</option>
+                        <option value="oldest">Спочатку старі</option>
+                        <option value="price_high">Вартість: від високої</option>
+                        <option value="price_low">Вартість: від низької</option>
+                    </select>
+                    
+                    <button id="apply-filters" class="btn btn-primary">Застосувати</button>
+                    <button id="reset-filters" class="btn btn-outline">Скинути</button>
+                </div>
+            </div>
+
+            <div class="tabs" id="booking-tabs">
+                <button class="tab active" data-tab="all">Усі бронювання</button>
+                <button class="tab" data-tab="active">Активні</button>
+                <button class="tab" data-tab="upcoming">Майбутні</button>
+                <button class="tab" data-tab="past">Минулі</button>
+                <button class="tab" data-tab="cancelled">Скасовані</button>
+            </div>
+
+            <div id="bookings-container">
+                <div class="text-center mt-30">
+                    <p>Завантаження бронювань...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="empty-state" class="hidden">
+        <div class="empty-state">
+            <i class="fas fa-calendar-alt empty-state-icon"></i>
+            <h2 class="empty-state-title">Немає бронювань</h2>
+            <p class="empty-state-description">
+                У вас ще немає бронювань. Почніть з пошуку ідеального авто для оренди!
+            </p>
+            <a href="rent.html" class="btn btn-primary btn-lg">Обрати авто</a>
+        </div>
+    </div>
+
+    <div id="cancel-modal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" id="close-cancel-modal">&times;</button>
+            <h2 class="modal-title">Скасування бронювання</h2>
+            <div class="form-group">
+                <label class="detail-label" for="cancel-reason">Причина скасування (необов'язково):</label>
+                <textarea id="cancel-reason" class="form-input" rows="4" placeholder="Опишіть причину скасування..."></textarea>
+            </div>
+            <div class="booking-actions mt-30">
+                <button class="btn btn-outline" id="cancel-modal-close">Скасувати</button>
+                <button class="btn btn-danger" id="confirm-cancel">Підтвердити скасування</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>52Rent</h3>
+                    <p>Лідер на ринку оренди автомобілів в Україні. Надійність та якість з 2015 року.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Навігація</h3>
+                    <a href="index.html">Головна</a>
+                    <a href="rent.html">Прокат авто</a>
+                    <a href="business.html">Для бізнесу</a>
+                    <a href="bookings.html">Мої бронювання</a>
+                </div>
+                <div class="footer-section">
+                    <h3>Контакти</h3>
+                    <a href="tel:+380671234567">+38 (067) 123 45 67</a>
+                    <a href="mailto:info@52rent.com">info@52rent.com</a>
+                    <p>Київ, вул. Хрещатик, 1</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Соціальні мережі</h3>
+                    <div class="flex gap-10">
+                        <a href="#"><i class="fab fa-facebook fa-2x"></i></a>
+                        <a href="#"><i class="fab fa-instagram fa-2x"></i></a>
+                        <a href="#"><i class="fab fa-telegram fa-2x"></i></a>
+                        <a href="#"><i class="fab fa-twitter fa-2x"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>52Rent © 2025 — Оренда автомобілів. Всі права захищені.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="api-client.js"></script>
+    <script>
+        let allBookings = [];
+        let currentBookingToCancel = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initUser();
+            setupEventListeners();
+            loadBookings();
+        });
+
+        async function initUser() {
+            const authButtons = document.getElementById('auth-buttons');
+            const userMenu = document.getElementById('user-menu');
+            const logoutBtn = document.getElementById('logout-btn');
+            const notificationCount = document.getElementById('notification-count');
+            
+            if (apiClient.isAuthenticated()) {
+                authButtons.classList.add('hidden');
+                userMenu.classList.remove('hidden');
+                
+                try {
+                    const user = await apiClient.getCurrentUser();
+                    if (user) {
+                        const userAvatar = document.getElementById('user-avatar');
+                        const userName = document.getElementById('user-name');
+                        
+                        if (userAvatar && user.username) {
+                            userAvatar.textContent = user.username.charAt(0).toUpperCase();
+                        }
+                        if (userName) {
+                            userName.textContent = user.username || 'Користувач';
+                        }
+                    }
+                } catch (error) {
+                    console.warn('Could not fetch user data:', error);
+                }
+                
+                try {
+                    const notifications = await apiClient.getUnreadNotifications();
+                    if (notificationCount && notifications.count) {
+                        notificationCount.textContent = notifications.count;
+                        notificationCount.style.display = 'flex';
+                    }
+                } catch (error) {
+                    console.warn('Could not load notifications:', error);
+                }
+            } else {
+                window.location.href = 'login.html?redirect=' + encodeURIComponent(window.location.href);
+                return;
+            }
+            
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function() {
+                    apiClient.logout();
+                    window.location.href = 'index.html';
+                });
+            }
+        }
+
+        function setupEventListeners() {
+            document.getElementById('apply-filters')?.addEventListener('click', applyFilters);
+            document.getElementById('reset-filters')?.addEventListener('click', resetFilters);
+            
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    filterBookingsByTab(this.dataset.tab);
+                });
+            });
+            
+            document.getElementById('close-cancel-modal')?.addEventListener('click', closeCancelModal);
+            document.getElementById('cancel-modal-close')?.addEventListener('click', closeCancelModal);
+            document.getElementById('confirm-cancel')?.addEventListener('click', confirmCancelBooking);
+            
+            document.getElementById('cancel-modal')?.addEventListener('click', function(e) {
+                if (e.target === this) closeCancelModal();
+            });
+        }
+
+        async function loadBookings() {
+            const container = document.getElementById('bookings-container');
+            const emptyState = document.getElementById('empty-state');
+            
+            if (!container) return;
+            
+            try {
+                container.innerHTML = '<div class="text-center mt-30"><p>Завантаження бронювань...</p></div>';
+                
+                const bookings = await apiClient.getMyBookings();
+                allBookings = Array.isArray(bookings) ? bookings : (bookings.results || []);
+                
+                if (allBookings.length === 0) {
+                    container.classList.add('hidden');
+                    emptyState.classList.remove('hidden');
+                    return;
+                }
+                
+                container.classList.remove('hidden');
+                emptyState.classList.add('hidden');
+                
+                renderBookings(allBookings);
+                applyFilters();
+                
+            } catch (error) {
+                console.error('Error loading bookings:', error);
+                container.innerHTML = `
+                    <div class="text-center mt-30">
+                        <p style="color: var(--error-color);">Помилка при завантаженні бронювань. Спробуйте оновити сторінку.</p>
+                        <button onclick="loadBookings()" class="btn btn-primary mt-20">Спробувати ще раз</button>
+                    </div>
+                `;
+            }
+        }
+
+        function renderBookings(bookings) {
+            const container = document.getElementById('bookings-container');
+            
+            if (bookings.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-search empty-state-icon"></i>
+                        <h2 class="empty-state-title">Бронювання не знайдено</h2>
+                        <p class="empty-state-description">
+                            За вашими критеріями пошуку бронювань не знайдено.
+                        </p>
+                        <button onclick="resetFilters()" class="btn btn-primary btn-lg">Скинути фільтри</button>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = bookings.map(booking => {
+                const car = booking.car || {};
+                const status = getStatusInfo(booking.status);
+                const isUpcoming = new Date(booking.start_date) > new Date();
+                const isActive = new Date(booking.start_date) <= new Date() && new Date(booking.end_date) >= new Date();
+                const isPast = new Date(booking.end_date) < new Date();
+                
+                return `
+                    <div class="booking-card" data-booking-id="${booking.id}" 
+                         data-status="${booking.status}"
+                         data-start-date="${booking.start_date}"
+                         data-end-date="${booking.end_date}">
+                        <div class="booking-header">
+                            <div class="booking-id">Бронювання #${booking.id}</div>
+                            <span class="booking-status ${status.class}">${status.text}</span>
+                        </div>
+                        
+                        <div class="booking-content">
+                            <div class="booking-car-info">
+                                <img src="${car.image_url || 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80'}" 
+                                     alt="${car.brand || ''} ${car.model || ''}" 
+                                     class="car-image-small">
+                                <div>
+                                    <h3 class="car-title">${car.brand || ''} ${car.model || ''}</h3>
+                                    <div class="car-details">
+                                        <span class="car-detail">${car.year || '—'}</span>
+                                        <span class="car-detail">${car.transmission || 'Автомат'}</span>
+                                        <span class="car-detail">${car.fuel_type || 'Бензин'}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="booking-details">
+                                <div class="detail-group">
+                                    <span class="detail-label">Дата початку</span>
+                                    <div class="detail-value">${formatDate(booking.start_date)}</div>
+                                </div>
+                                <div class="detail-group">
+                                    <span class="detail-label">Дата завершення</span>
+                                    <div class="detail-value">${formatDate(booking.end_date)}</div>
+                                </div>
+                                <div class="detail-group">
+                                    <span class="detail-label">Тривалість</span>
+                                    <div class="detail-value">${calculateDays(booking.start_date, booking.end_date)} днів</div>
+                                </div>
+                                <div class="detail-group">
+                                    <span class="detail-label">Загальна вартість</span>
+                                    <div class="detail-value booking-total">${booking.total_price || booking.amount || 0} грн</div>
+                                </div>
+                                <div class="detail-group">
+                                    <span class="detail-label">Створено</span>
+                                    <div class="detail-value">${formatDate(booking.created_at || booking.created)}</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="booking-footer">
+                            <div>
+                                ${status.message ? `<p style="font-size: 14px; color: var(--dark-gray);">${status.message}</p>` : ''}
+                            </div>
+                            <div class="booking-actions">
+                                ${(booking.status === 'pending' || booking.status === 'confirmed' || booking.status === 'payment_pending') && isUpcoming ? 
+                                    `<button class="btn btn-danger btn-sm" onclick="openCancelModal(${booking.id})">Скасувати</button>` : ''}
+                                
+                                ${booking.status === 'payment_pending' ? 
+                                    `<button class="btn btn-success btn-sm" onclick="payBooking(${booking.id})">Оплатити</button>` : ''}
+                                
+                                ${isActive ? 
+                                    `<button class="btn btn-primary btn-sm" onclick="viewBooking(${booking.id})">Деталі</button>` : ''}
+                                
+                                <button class="btn btn-outline btn-sm" onclick="viewBookingDetails(${booking.id})">Переглянути</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function filterBookingsByTab(tab) {
+            const now = new Date();
+            let filteredBookings = [...allBookings];
+            
+            switch(tab) {
+                case 'active':
+                    filteredBookings = allBookings.filter(booking => 
+                        new Date(booking.start_date) <= now && 
+                        new Date(booking.end_date) >= now &&
+                        booking.status !== 'cancelled'
+                    );
+                    break;
+                case 'upcoming':
+                    filteredBookings = allBookings.filter(booking => 
+                        new Date(booking.start_date) > now &&
+                        booking.status !== 'cancelled'
+                    );
+                    break;
+                case 'past':
+                    filteredBookings = allBookings.filter(booking => 
+                        new Date(booking.end_date) < now &&
+                        booking.status !== 'cancelled'
+                    );
+                    break;
+                case 'cancelled':
+                    filteredBookings = allBookings.filter(booking => 
+                        booking.status === 'cancelled'
+                    );
+                    break;
+                default:
+                    filteredBookings = allBookings;
+            }
+            
+            renderBookings(filteredBookings);
+        }
+
+        function applyFilters() {
+            const statusFilter = document.getElementById('status-filter').value;
+            const sortFilter = document.getElementById('sort-filter').value;
+            const activeTab = document.querySelector('.tab.active')?.dataset.tab || 'all';
+            
+            let filteredBookings = [...allBookings];
+            
+            if (statusFilter) {
+                filteredBookings = filteredBookings.filter(booking => booking.status === statusFilter);
+            }
+            
+            filteredBookings.sort((a, b) => {
+                switch(sortFilter) {
+                    case 'newest':
+                        return new Date(b.created_at || b.created) - new Date(a.created_at || a.created);
+                    case 'oldest':
+                        return new Date(a.created_at || a.created) - new Date(b.created_at || b.created);
+                    case 'price_high':
+                        return (b.total_price || b.amount || 0) - (a.total_price || a.amount || 0);
+                    case 'price_low':
+                        return (a.total_price || a.amount || 0) - (b.total_price || b.amount || 0);
+                    default:
+                        return 0;
+                }
+            });
+            
+            if (activeTab !== 'all') {
+                filterBookingsByTab(activeTab);
+            } else {
+                renderBookings(filteredBookings);
+            }
+        }
+
+        function resetFilters() {
+            document.getElementById('status-filter').value = '';
+            document.getElementById('sort-filter').value = 'newest';
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelector('[data-tab="all"]').classList.add('active');
+            renderBookings(allBookings);
+        }
+
+        function openCancelModal(bookingId) {
+            currentBookingToCancel = bookingId;
+            document.getElementById('cancel-modal').classList.add('active');
+        }
+
+        function closeCancelModal() {
+            currentBookingToCancel = null;
+            document.getElementById('cancel-reason').value = '';
+            document.getElementById('cancel-modal').classList.remove('active');
+        }
+
+        async function confirmCancelBooking() {
+            if (!currentBookingToCancel) return;
+            
+            const reason = document.getElementById('cancel-reason').value;
+            
+            try {
+                await apiClient.cancelBooking(currentBookingToCancel, reason);
+                closeCancelModal();
+                showNotification('Бронювання успішно скасовано!', 'success');
+                loadBookings();
+            } catch (error) {
+                console.error('Error cancelling booking:', error);
+                showNotification('Помилка при скасуванні бронювання', 'error');
+            }
+        }
+
+        async function payBooking(bookingId) {
+            try {
+                const payment = await apiClient.createPayment(bookingId);
+                
+                if (payment.data && payment.signature) {
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = 'https://www.liqpay.ua/api/3/checkout';
+                    form.style.display = 'none';
+                    
+                    const dataInput = document.createElement('input');
+                    dataInput.type = 'hidden';
+                    dataInput.name = 'data';
+                    dataInput.value = payment.data;
+                    form.appendChild(dataInput);
+                    
+                    const signatureInput = document.createElement('input');
+                    signatureInput.type = 'hidden';
+                    signatureInput.name = 'signature';
+                    signatureInput.value = payment.signature;
+                    form.appendChild(signatureInput);
+                    
+                    document.body.appendChild(form);
+                    form.submit();
+                } else {
+                    showNotification('Перехід на сторінку оплати...', 'info');
+                    window.location.href = payment.payment_url || '#';
+                }
+            } catch (error) {
+                console.error('Error creating payment:', error);
+                showNotification('Помилка при створенні платежу', 'error');
+            }
+        }
+
+        function viewBookingDetails(bookingId) {
+            showNotification('Функція в розробці', 'info');
+        }
+
+        function getStatusInfo(status) {
+            const statuses = {
+                'pending': {
+                    text: 'Очікує підтвердження',
+                    class: 'status-pending',
+                    message: 'Очікуйте підтвердження менеджером'
+                },
+                'confirmed': {
+                    text: 'Підтверджено',
+                    class: 'status-confirmed',
+                    message: 'Готово до отримання авто'
+                },
+                'active': {
+                    text: 'Активне',
+                    class: 'status-active',
+                    message: 'Авто у вас'
+                },
+                'completed': {
+                    text: 'Завершено',
+                    class: 'status-completed',
+                    message: 'Авто повернуто'
+                },
+                'cancelled': {
+                    text: 'Скасовано',
+                    class: 'status-cancelled',
+                    message: 'Бронювання скасовано'
+                },
+                'payment_pending': {
+                    text: 'Очікує оплати',
+                    class: 'status-payment_pending',
+                    message: 'Необхідно оплатити бронювання'
+                }
+            };
+            
+            return statuses[status] || {
+                text: status,
+                class: 'status-pending',
+                message: ''
+            };
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return '—';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('uk-UA', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        function calculateDays(startDate, endDate) {
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            const diffTime = Math.abs(end - start);
+            return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                background: ${type === 'success' ? '#4CAF50' : type === 'error' ? '#f44336' : '#2196F3'};
+                color: white;
+                border-radius: 4px;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+                z-index: 10000;
+                animation: slideIn 0.3s ease;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 5000);
+        }
+
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

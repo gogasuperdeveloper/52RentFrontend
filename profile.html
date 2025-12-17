@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>52Rent — Профіль користувача</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .profile-container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .profile-header {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: #ff9900;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: white;
+            font-weight: bold;
+        }
+
+        .profile-info h1 {
+            margin: 0 0 10px 0;
+            color: #111;
+        }
+
+        .profile-info p {
+            color: #666;
+            margin: 5px 0;
+        }
+
+        .profile-section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+
+        .profile-section h2 {
+            margin-bottom: 20px;
+            color: #111;
+        }
+
+        .booking-item {
+            border: 2px solid #f0f0f0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .booking-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .booking-status {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .status-pending {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .status-confirmed {
+            background: #e8f5e9;
+            color: #388e3c;
+        }
+
+        .status-cancelled {
+            background: #f5f5f5;
+            color: #616161;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #ff9900;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #e68a00;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #ff9900;
+            color: #ff9900;
+        }
+
+        .btn-outline:hover {
+            background: #ff9900;
+            color: white;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #ff9900;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <header class="main-header">
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">52Rent</a>
+                
+                <nav class="main-nav">
+                    <a href="index.html" class="nav-link">Головна</a>
+                    <a href="support_admin.html" class="nav-link">Адмін панель</a>
+                    
+                    <div id="user-menu" class="user-menu">
+                        <button class="btn btn-outline" id="logout-btn">Вийти</button>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="profile-container">
+        <div class="profile-header" id="profile-header">
+            <div class="profile-avatar" id="profile-avatar">U</div>
+            <div class="profile-info" style="flex: 1;">
+                <h1 id="profile-name">Завантаження...</h1>
+                <p id="profile-email">-</p>
+                <button class="btn btn-primary" id="edit-profile-btn" onclick="toggleEditMode()" style="margin-top: 15px;">
+                    <i class="fas fa-edit"></i> Редагувати профіль
+                </button>
+            </div>
+        </div>
+
+        <div class="profile-section" id="edit-section" style="display: none;">
+            <h2>Редагування профілю</h2>
+            <form id="edit-profile-form">
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: bold;">Ім'я користувача</label>
+                    <input type="text" id="edit-username" class="form-input" required>
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: bold;">Email</label>
+                    <input type="email" id="edit-email" class="form-input" required>
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: bold;">Пароль (залиште порожнім щоб не змінювати)</label>
+                    <input type="password" id="edit-password" class="form-input">
+                </div>
+                <div>
+                    <button type="submit" class="btn btn-primary">Зберегти зміни</button>
+                    <button type="button" class="btn btn-outline" onclick="toggleEditMode()" style="margin-left: 10px;">Скасувати</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="profile-section">
+            <h2>Бронювання користувача</h2>
+            <div id="bookings-list">
+                <div class="loading">Завантаження...</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="api-client.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const userId = urlParams.get('user_id');
+
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+            if (userId) {
+                loadUserProfile(userId);
+                loadUserBookings(userId);
+                setupEditForm();
+            } else {
+                document.getElementById('profile-header').innerHTML = '<p>Користувач не знайдено</p>';
+            }
+        });
+
+        function setupEditForm() {
+            const form = document.getElementById('edit-profile-form');
+            if (form) {
+                form.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    const username = document.getElementById('edit-username').value;
+                    const email = document.getElementById('edit-email').value;
+                    const password = document.getElementById('edit-password').value;
+                    
+                    try {
+                        const updateData = {
+                            username: username,
+                            email: email
+                        };
+                        
+                        if (password) {
+                            updateData.password = password;
+                        }
+                        
+                        await apiClient.updateUser(userId, updateData);
+                        showAlert('Профіль успішно оновлено', 'success');
+                        loadUserProfile(userId);
+                        toggleEditMode();
+                    } catch (error) {
+                        console.error('Помилка оновлення профілю:', error);
+                        showAlert('Помилка оновлення профілю', 'error');
+                    }
+                });
+            }
+        }
+
+        function checkAuth() {
+            if (!apiClient.isAuthenticated()) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const logoutBtn = document.getElementById('logout-btn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function() {
+                    apiClient.logout();
+                    window.location.href = 'index.html';
+                });
+            }
+        }
+
+        let currentUser = null;
+
+        async function loadUserProfile(userId) {
+            try {
+                currentUser = await apiClient.getUser(userId);
+                if (currentUser) {
+                    document.getElementById('profile-name').textContent = currentUser.username || 'Користувач';
+                    document.getElementById('profile-email').textContent = currentUser.email || '-';
+                    const avatar = document.getElementById('profile-avatar');
+                    if (avatar && currentUser.username) {
+                        avatar.textContent = currentUser.username.charAt(0).toUpperCase();
+                    }
+                    
+                    document.getElementById('edit-username').value = currentUser.username || '';
+                    document.getElementById('edit-email').value = currentUser.email || '';
+                }
+            } catch (error) {
+                console.error('Помилка завантаження профілю:', error);
+                showAlert('Помилка завантаження профілю', 'error');
+            }
+        }
+
+        function toggleEditMode() {
+            const editSection = document.getElementById('edit-section');
+            if (editSection.style.display === 'none') {
+                editSection.style.display = 'block';
+            } else {
+                editSection.style.display = 'none';
+            }
+        }
+
+
+        function showAlert(message, type) {
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            alert.style.position = 'fixed';
+            alert.style.top = '20px';
+            alert.style.right = '20px';
+            alert.style.zIndex = '10000';
+            document.body.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.remove();
+            }, 5000);
+        }
+
+        async function loadUserBookings(userId) {
+            const container = document.getElementById('bookings-list');
+            if (!container) return;
+
+            try {
+                const bookings = await apiClient.getUserBookings(userId);
+                
+                if (!bookings || bookings.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-calendar-times"></i>
+                            <h3>У користувача немає бронювань</h3>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = bookings.map(booking => {
+                    const statusClass = `status-${booking.status}`;
+                    const statusText = getStatusText(booking.status);
+                    return `
+                        <div class="booking-item">
+                            <div class="booking-header">
+                                <div>
+                                    <strong>${escapeHtml(booking.car_brand || '')} ${escapeHtml(booking.car_name || '')}</strong>
+                                    <p style="margin: 5px 0; color: #666;">Бронювання #${booking.id}</p>
+                                </div>
+                                <span class="booking-status ${statusClass}">${statusText}</span>
+                            </div>
+                            <div>
+                                <p><strong>Дата початку:</strong> ${formatDate(booking.start_date)}</p>
+                                <p><strong>Дата завершення:</strong> ${formatDate(booking.end_date)}</p>
+                            </div>
+                            <div style="margin-top: 15px;">
+                                ${booking.status === 'pending' ? `
+                                    <button class="btn btn-primary" onclick="confirmBooking(${booking.id})" style="margin-right: 10px;">
+                                        <i class="fas fa-check"></i> Підтвердити
+                                    </button>
+                                ` : ''}
+                                <button class="btn btn-outline" onclick="editBooking(${booking.id})">
+                                    <i class="fas fa-edit"></i> Редагувати
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } catch (error) {
+                console.error('Помилка завантаження бронювань:', error);
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <p>Помилка завантаження бронювань</p>
+                    </div>
+                `;
+            }
+        }
+
+        function getStatusText(status) {
+            const statusMap = {
+                'pending': 'Очікує',
+                'confirmed': 'Підтверджено',
+                'cancelled': 'Скасовано'
+            };
+            return statusMap[status] || status;
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('uk-UA', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function editBooking(bookingId) {
+            window.location.href = `bookings.html?edit=${bookingId}`;
+        }
+
+        async function confirmBooking(bookingId) {
+            if (!confirm('Підтвердити це бронювання?')) {
+                return;
+            }
+
+            try {
+                await apiClient.confirmBooking(bookingId);
+                showAlert('Бронювання успішно підтверджено', 'success');
+                loadUserBookings(userId);
+            } catch (error) {
+                console.error('Помилка підтвердження бронювання:', error);
+                const errorMsg = error.message || 'Помилка підтвердження бронювання';
+                showAlert(errorMsg, 'error');
+            }
+        }
+
+        function showAlert(message, type) {
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            alert.style.position = 'fixed';
+            alert.style.top = '20px';
+            alert.style.right = '20px';
+            alert.style.zIndex = '10000';
+            document.body.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.remove();
+            }, 5000);
+        }
+
+        async function getUser(userId) {
+            return apiClient.getUser(userId);
+        }
+    </script>
+</body>
+</html>
+

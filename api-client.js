@@ -16,7 +16,11 @@ const ENDPOINTS = {
     createPayment: API_BASE + '/payments/create/',
     checkPayment: (payment_id) => `${API_BASE}/payments/check/${payment_id}/`,
 
-    searchCars: `${API_BASE}/main/cars/search/`
+    searchCars: `${API_BASE}/main/cars/search/`,
+
+    supportRequests: `${API_BASE}/main/support/`,
+    supportRequestDetail: (id) => `${API_BASE}/main/support/${id}/`,
+    supportMessages: (requestId) => `${API_BASE}/main/support/${requestId}/messages/`
 };
 
 class ApiClient {
@@ -205,14 +209,24 @@ class ApiClient {
     }
 
 
-    async createPayment(bookingId, amount, description) {
+    async createPayment(id, amount, description) {
         return this.request(ENDPOINTS.createPayment, {
             method: 'POST',
             body: JSON.stringify({
-                booking_id: bookingId,
+                order_id: id,
                 amount: amount,
                 description: description
             }),
+        });
+    }
+
+    async cancelBooking(id, reason = '') {
+        const bookingData = {
+            status: 'cancelled',
+        };
+        return this.request(ENDPOINTS.bookingDetail(id), { 
+            method: 'PATCH', 
+            body: JSON.stringify(bookingData) 
         });
     }
 
@@ -248,13 +262,65 @@ class ApiClient {
     async updateCar(id, carData) { return this.request(ENDPOINTS.carDetail(id), { method: 'PUT', body: JSON.stringify(carData) }); }
     async deleteCar(id) { return this.request(ENDPOINTS.carDetail(id), { method: 'DELETE' }); }
     async getBookings() { return this.request(ENDPOINTS.bookings); }
+    async getMyBookings() { return this.request(ENDPOINTS.bookings); }
     async getBooking(id) { return this.request(ENDPOINTS.bookingDetail(id)); }
+    async getUser(id) { return this.request(`${API_BASE}/main/users/${id}/`); }
+    async updateUser(id, userData) { return this.request(`${API_BASE}/main/users/${id}/`, { method: 'PUT', body: JSON.stringify(userData) }); }
     async createBooking(bookingData) { return this.request(ENDPOINTS.bookings, { method: 'POST', body: JSON.stringify(bookingData) }); }
     async updateBooking(id, bookingData) { return this.request(ENDPOINTS.bookingDetail(id), { method: 'PUT', body: JSON.stringify(bookingData) }); }
     async deleteBooking(id) { return this.request(ENDPOINTS.bookingDetail(id), { method: 'DELETE' }); }
     async searchCars(filters = {}) {
         const queryParams = new URLSearchParams(filters).toString();
         return this.request(`${ENDPOINTS.cars}?${queryParams}`);
+    }
+
+    async getSupportRequests() {
+        return this.request(ENDPOINTS.supportRequests);
+    }
+
+    async getSupportRequest(id) {
+        return this.request(ENDPOINTS.supportRequestDetail(id));
+    }
+
+    async createSupportRequest(data) {
+        return this.request(ENDPOINTS.supportRequests, {
+            method: 'POST',
+            body: JSON.stringify(data)
+        });
+    }
+
+    async updateSupportRequest(id, data) {
+        return this.request(ENDPOINTS.supportRequestDetail(id), {
+            method: 'PUT',
+            body: JSON.stringify(data)
+        });
+    }
+
+    async deleteSupportRequest(id) {
+        return this.request(ENDPOINTS.supportRequestDetail(id), {
+            method: 'DELETE'
+        });
+    }
+
+    async getSupportMessages(requestId) {
+        return this.request(ENDPOINTS.supportMessages(requestId));
+    }
+
+    async addSupportMessage(requestId, message) {
+        return this.request(ENDPOINTS.supportMessages(requestId), {
+            method: 'POST',
+            body: JSON.stringify({ message })
+        });
+    }
+
+    async getUserBookings(userId) {
+        return this.request(`${API_BASE}/main/users/${userId}/bookings/`);
+    }
+
+    async confirmBooking(bookingId) {
+        return this.request(`${API_BASE}/main/bookings/${bookingId}/confirm/`, {
+            method: 'POST'
+        });
     }
 }
 

@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>52Rent — Техпідтримка</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .support-container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .support-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .support-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #111;
+        }
+
+        .support-header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .support-form-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+
+        .support-form-card h2 {
+            margin-bottom: 20px;
+            color: #111;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-input,
+        .form-textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: #ff9900;
+        }
+
+        .form-textarea {
+            min-height: 150px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: #ff9900;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+
+        .btn-primary:hover {
+            background: #e68a00;
+        }
+
+        .btn-primary:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .requests-list {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+
+        .requests-list h2 {
+            margin-bottom: 20px;
+            color: #111;
+        }
+
+        .request-item {
+            border: 2px solid #f0f0f0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: border-color 0.3s;
+        }
+
+        .request-item:hover {
+            border-color: #ff9900;
+        }
+
+        .request-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+        }
+
+        .request-subject {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #111;
+            margin-bottom: 5px;
+        }
+
+        .request-status {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .status-new {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .status-in_progress {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .status-resolved {
+            background: #e8f5e9;
+            color: #388e3c;
+        }
+
+        .status-closed {
+            background: #f5f5f5;
+            color: #616161;
+        }
+
+        .request-message {
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .request-response {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid #ff9900;
+        }
+
+        .request-response h4 {
+            color: #ff9900;
+            margin-bottom: 10px;
+        }
+
+        .request-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            color: #999;
+            margin-top: 15px;
+        }
+
+        .request-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #ff9900;
+            color: #ff9900;
+            padding: 8px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .btn-outline:hover {
+            background: #ff9900;
+            color: white;
+        }
+
+        .btn-danger {
+            background: transparent;
+            border: 2px solid #dc3545;
+            color: #dc3545;
+            padding: 8px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .btn-danger:hover {
+            background: #dc3545;
+            color: white;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: #ddd;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        .messages-container {
+            margin-top: 20px;
+            border-top: 2px solid #f0f0f0;
+            padding-top: 20px;
+            display: none;
+        }
+
+        .messages-container.open {
+            display: block;
+        }
+
+        .messages-list {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        .message-item {
+            margin-bottom: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            background: white;
+        }
+
+        .message-item.admin {
+            background: #fff3e0;
+            border-left: 4px solid #ff9900;
+        }
+
+        .message-item.user {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+        }
+
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .message-author {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .message-time {
+            font-size: 0.85rem;
+            color: #999;
+        }
+
+        .message-text {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .message-form {
+            display: flex;
+            gap: 10px;
+        }
+
+        .message-input {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .message-input:focus {
+            outline: none;
+            border-color: #ff9900;
+        }
+
+        .btn-toggle-messages {
+            background: #f0f0f0;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: #666;
+            transition: all 0.3s;
+        }
+
+        .btn-toggle-messages:hover {
+            background: #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+    <header class="main-header">
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">52Rent</a>
+                
+                <nav class="main-nav">
+                    <a href="index.html" class="nav-link">Головна</a>
+                    <a href="rent.html" class="nav-link">Прокат авто</a>
+                    <a href="bookings.html" class="nav-link">Мої бронювання</a>
+                    <a href="support.html" class="nav-link active">Підтримка</a>
+                    
+                    <div id="auth-buttons" class="user-menu">
+                        <a href="login.html" class="btn btn-outline">Увійти</a>
+                    </div>
+                    
+                    <div id="user-menu" class="user-menu hidden">
+                        <div class="user-avatar" id="user-avatar">U</div>
+                        <div class="user-info">
+                            <span class="user-name" id="user-name">Користувач</span>
+                            <span class="user-email" id="user-email">user@example.com</span>
+                        </div>
+                        <button class="btn btn-outline" id="logout-btn">Вийти</button>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="support-container">
+        <div class="support-header">
+            <h1><i class="fas fa-headset"></i> Техпідтримка</h1>
+            <p>Ми завжди готові допомогти вам</p>
+        </div>
+
+        <div id="alert-container"></div>
+
+        <div class="support-form-card">
+            <h2>Створити новий запит</h2>
+            <form id="support-form">
+                <div class="form-group">
+                    <label class="form-label" for="subject">Тема запиту *</label>
+                    <input type="text" id="subject" class="form-input" required placeholder="Наприклад: Проблема з бронюванням">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="message">Повідомлення *</label>
+                    <textarea id="message" class="form-textarea" required placeholder="Опишіть вашу проблему або питання детально..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" id="submit-btn">
+                    <i class="fas fa-paper-plane"></i> Відправити запит
+                </button>
+            </form>
+        </div>
+
+        <div class="requests-list">
+            <h2>Мої запити</h2>
+            <div id="requests-container">
+                <div class="loading">
+                    <i class="fas fa-spinner fa-spin"></i> Завантаження...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>52Rent</h3>
+                    <p>Лідер на ринку оренди автомобілів в Україні.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Навігація</h3>
+                    <a href="index.html">Головна</a>
+                    <a href="rent.html">Прокат авто</a>
+                    <a href="bookings.html">Мої бронювання</a>
+                </div>
+                <div class="footer-section">
+                    <h3>Контакти</h3>
+                    <a href="tel:+380671234567">+38 (067) 123 45 67</a>
+                    <a href="mailto:info@52rent.com">info@52rent.com</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>52Rent © 2025 — Оренда автомобілів. Всі права захищені.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="api-client.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+            loadSupportRequests();
+            setupForm();
+        });
+
+        function checkAuth() {
+            if (!apiClient.isAuthenticated()) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const authButtons = document.getElementById('auth-buttons');
+            const userMenu = document.getElementById('user-menu');
+            
+            if (authButtons) authButtons.classList.add('hidden');
+            if (userMenu) userMenu.classList.remove('hidden');
+
+            apiClient.getCurrentUser().then(user => {
+                if (user) {
+                    const userAvatar = document.getElementById('user-avatar');
+                    const userName = document.getElementById('user-name');
+                    const userEmail = document.getElementById('user-email');
+                    
+                    if (userAvatar && user.username) {
+                        userAvatar.textContent = user.username.charAt(0).toUpperCase();
+                    }
+                    if (userName) {
+                        userName.textContent = user.username || 'Користувач';
+                    }
+                    if (userEmail && user.email) {
+                        userEmail.textContent = user.email;
+                    }
+                }
+            }).catch(console.error);
+
+            const logoutBtn = document.getElementById('logout-btn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function() {
+                    apiClient.logout();
+                    window.location.href = 'index.html';
+                });
+            }
+        }
+
+        function setupForm() {
+            const form = document.getElementById('support-form');
+            if (!form) return;
+
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const subject = document.getElementById('subject').value.trim();
+                const message = document.getElementById('message').value.trim();
+                const submitBtn = document.getElementById('submit-btn');
+
+                if (!subject || !message) {
+                    showAlert('Будь ласка, заповніть всі поля', 'error');
+                    return;
+                }
+
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Відправка...';
+
+                try {
+                    const result = await apiClient.createSupportRequest({
+                        subject: subject,
+                        message: message
+                    });
+
+                    showAlert('Запит успішно створено!', 'success');
+                    form.reset();
+                    loadSupportRequests();
+                } catch (error) {
+                    console.error('Помилка створення запиту:', error);
+                    showAlert('Помилка створення запиту. Спробуйте ще раз.', 'error');
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Відправити запит';
+                }
+            });
+        }
+
+        async function loadSupportRequests() {
+            const container = document.getElementById('requests-container');
+            if (!container) return;
+
+            try {
+                const requests = await apiClient.getSupportRequests();
+                
+                if (!requests || requests.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-inbox"></i>
+                            <h3>У вас ще немає запитів</h3>
+                            <p>Створіть перший запит вище</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = requests.map(request => `
+                    <div class="request-item">
+                        <div class="request-header">
+                            <div>
+                                <div class="request-subject">${escapeHtml(request.subject)}</div>
+                                <div class="request-meta">
+                                    <span><i class="fas fa-calendar"></i> ${formatDate(request.created_at)}</span>
+                                </div>
+                            </div>
+                            <span class="request-status status-${request.status}">
+                                ${getStatusText(request.status)}
+                            </span>
+                        </div>
+                        <div class="request-message">${escapeHtml(request.message)}</div>
+                        <div class="messages-container" id="messages-${request.id}">
+                            <div class="messages-list" id="messages-list-${request.id}">
+                                <div class="loading">Завантаження повідомлень...</div>
+                            </div>
+                            ${request.status !== 'closed' ? `
+                                <form class="message-form" onsubmit="sendMessage(event, ${request.id})">
+                                    <input type="text" class="message-input" id="message-input-${request.id}" 
+                                           placeholder="Введіть ваше повідомлення..." required>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-paper-plane"></i> Відправити
+                                    </button>
+                                </form>
+                            ` : ''}
+                        </div>
+                        <div class="request-actions">
+                            <button class="btn-toggle-messages" onclick="toggleMessages(${request.id})">
+                                <i class="fas fa-comments"></i> Діалог
+                            </button>
+                            ${request.status !== 'closed' ? `
+                                <button class="btn-outline" onclick="deleteRequest(${request.id})">
+                                    <i class="fas fa-trash"></i> Видалити
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Помилка завантаження запитів:', error);
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>Помилка завантаження запитів</h3>
+                        <p>Спробуйте оновити сторінку</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function deleteRequest(id) {
+            if (!confirm('Ви впевнені, що хочете видалити цей запит?')) {
+                return;
+            }
+
+            try {
+                await apiClient.deleteSupportRequest(id);
+                showAlert('Запит успішно видалено', 'success');
+                loadSupportRequests();
+            } catch (error) {
+                console.error('Помилка видалення запиту:', error);
+                showAlert('Помилка видалення запиту', 'error');
+            }
+        }
+
+        function showAlert(message, type) {
+            const container = document.getElementById('alert-container');
+            if (!container) return;
+
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            container.innerHTML = '';
+            container.appendChild(alert);
+
+            setTimeout(() => {
+                alert.remove();
+            }, 5000);
+        }
+
+        function getStatusText(status) {
+            const statusMap = {
+                'new': 'Нове',
+                'in_progress': 'В обробці',
+                'resolved': 'Вирішено',
+                'closed': 'Закрито'
+            };
+            return statusMap[status] || status;
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('uk-UA', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function toggleMessages(requestId) {
+            const container = document.getElementById(`messages-${requestId}`);
+            if (!container) return;
+
+            if (container.classList.contains('open')) {
+                container.classList.remove('open');
+            } else {
+                container.classList.add('open');
+                loadMessages(requestId);
+            }
+        }
+
+        async function loadMessages(requestId) {
+            const messagesList = document.getElementById(`messages-list-${requestId}`);
+            if (!messagesList) return;
+
+            try {
+                const messages = await apiClient.getSupportMessages(requestId);
+                
+                if (!messages || messages.length === 0) {
+                    messagesList.innerHTML = `
+                        <div class="empty-state" style="padding: 20px;">
+                            <p>Повідомлень поки немає</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                messagesList.innerHTML = messages.map(msg => `
+                    <div class="message-item ${msg.is_from_admin ? 'admin' : 'user'}">
+                        <div class="message-header">
+                            <span class="message-author">
+                                ${msg.is_from_admin ? '<i class="fas fa-user-shield"></i> Адміністратор' : '<i class="fas fa-user"></i> ' + escapeHtml(msg.author_username)}
+                            </span>
+                            <span class="message-time">${formatDate(msg.created_at)}</span>
+                        </div>
+                        <div class="message-text">${escapeHtml(msg.message)}</div>
+                    </div>
+                `).join('');
+
+                messagesList.scrollTop = messagesList.scrollHeight;
+            } catch (error) {
+                console.error('Помилка завантаження повідомлень:', error);
+                messagesList.innerHTML = `
+                    <div class="empty-state" style="padding: 20px;">
+                        <p>Помилка завантаження повідомлень</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function sendMessage(e, requestId) {
+            e.preventDefault();
+            
+            const input = document.getElementById(`message-input-${requestId}`);
+            if (!input) return;
+
+            const messageText = input.value.trim();
+            if (!messageText) return;
+
+            try {
+                await apiClient.addSupportMessage(requestId, messageText);
+                input.value = '';
+                loadMessages(requestId);
+                loadSupportRequests();
+            } catch (error) {
+                console.error('Помилка відправки повідомлення:', error);
+                showAlert('Помилка відправки повідомлення', 'error');
+            }
+        }
+    </script>
+</body>
+</html>
+

@@ -448,8 +448,8 @@
             <nav class="main-nav">
                 <a href="index.html" class="nav-link">Головна</a>
                 <a href="rent.html" class="nav-link active">Прокат авто</a>
-                <a href="business.html" class="nav-link">Для бізнесу</a>
                 <a href="bookings.html" class="nav-link">Мої бронювання</a>
+                <a href="support.html" class="nav-link">Підтримка</a>
 
                 <div id="auth-buttons" class="user-menu">
                     <a href="login.html" class="btn btn-outline">Увійти</a>
@@ -577,8 +577,8 @@
                 <h3>Навігація</h3>
                 <a href="index.html">Головна</a>
                 <a href="rent.html">Прокат авто</a>
-                <a href="business.html">Для бізнесу</a>
                 <a href="bookings.html">Мої бронювання</a>
+                <a href="support.html">Підтримка</a>
             </div>
             <div class="footer-section">
                 <h3>Контакти</h3>
@@ -655,7 +655,6 @@
 <script src="api-client.js"></script>
 
 <script>
-
     let allCars = [];
     let currentCarForBooking = null;
     let currentCarPrice = 0;
@@ -666,7 +665,16 @@
         setupEventListeners();
         initFilters();
         loadCars();
+        checkCategoryQuery();
     });
+
+    function getCarImageUrl(car) {
+    if (car?.images?.length && car.images[0].image) {
+        return API_BASE + car.images[0].image; 
+    }
+    return getDefaultCarImage(car?.category);
+}
+
 
     async function initUser() {
         const authButtons = document.getElementById('auth-buttons');
@@ -752,30 +760,35 @@
         document.getElementById('modal-end-date').value = endDate;
     }
 
-    function getCarImageUrl(car) {
-        if (car?.images?.length) {
-            return API_BASE + car.images[0].image;
+    function checkCategoryQuery() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const category = urlParams.get('category');
+        if (category) {
+            document.getElementById('category-filter').value = category;
+            searchCars();
         }
-        return getDefaultCarImage(car?.category);
     }
 
     async function loadCars() {
         const container = document.getElementById('cars-container');
         if (!container) return;
 
-        try {
-            container.innerHTML = `
-                <div class="loader">
-                    <div class="loader-spinner"></div>
-                    <p>Завантаження автомобілів...</p>
-                </div>
-            `;
+        container.innerHTML = `
+            <div class="loader">
+                <div class="loader-spinner"></div>
+                <p>Завантаження автомобілів...</p>
+            </div>
+        `;
+        container.classList.remove('hidden');
+        document.getElementById('empty-state').classList.add('hidden');
 
-            const cars = await apiClient.getCars();
+
+        try {
+            const cars = await apiClient.getCars(); 
             allCars = Array.isArray(cars) ? cars : (cars.results || []);
 
             if (allCars.length === 0) {
-                showEmptyState();
+                showEmptyState("На жаль, наразі немає доступних авто.");
                 return;
             }
 
@@ -783,12 +796,8 @@
 
         } catch (error) {
             console.error('Error loading cars:', error);
-            container.innerHTML = `
-                <div class="text-center mt-30">
-                    <p style="color: var(--error-color);">Помилка при завантаженні авто. Спробуйте оновити сторінку.</p>
-                    <button onclick="loadCars()" class="btn btn-primary mt-20">Спробувати ще раз</button>
-                </div>
-            `;
+            const errorMessage = `Помилка при завантаженні авто. Статус: ${error.message || 'Сервер недоступний'}. Перевірте консоль браузера.`;
+            showEmptyState(errorMessage, true);
         }
     }
 
@@ -821,25 +830,37 @@
                     <p>Пошук доступних авто...</p>
                 </div>
             `;
-            const availableCars = allCars.filter(car => {
-                const price = Number(car.price_per_day || 0);
+        
+        const filters = {
+            start_date: startDate,
+            end_date: endDate,
+        };
 
-                if (category && car.category !== category) return false;
-                if (transmission && car.transmission !== transmission) return false;
-                if (fuel && car.fuel_type !== fuel) return false;
-                if (maxPrice && price > Number(maxPrice)) return false;
+        const cars = await apiClient.searchCars(filters);
+        
+        allCars = Array.isArray(cars) ? cars : (cars.results || []);
 
-                return true;
-            });
+        const availableCars = allCars.filter(car => {
+            const price = Number(car.price_per_day || 0);
 
-            if (!availableCars.length) showEmptyState();
-            else renderCars(availableCars);
+            if (category && car.category !== category) return false;
+            if (transmission && car.transmission !== transmission) return false;
+            if (fuel && car.fuel_type !== fuel) return false;
+            if (maxPrice && price > Number(maxPrice)) return false;
 
-        } catch (error) {
-            console.error('Error searching cars:', error);
-            showNotification('Помилка при пошуку авто', 'error');
-        }
+            return true;
+        });
+
+        if (!availableCars.length) showEmptyState();
+        else renderCars(availableCars);
+        
+        allCars = availableCars; 
+
+    } catch (error) {
+        console.error('Error searching cars:', error);
+        showNotification('Помилка при пошуку авто', 'error');
     }
+}
 
     function renderCars(cars) {
         const container = document.getElementById('cars-container');
@@ -886,7 +907,6 @@
                                 <div class="car-price">${price} грн/доба</div>
 
                                 <div class="flex gap-10 mt-20">
-                                    <a href="car_detail.html?id=${car.id}" class="btn btn-outline flex-1">Детальніше</a>
                                     <button class="btn btn-primary flex-1 book-btn"
                                             data-car-id="${car.id}"
                                             data-car-name="${(titleBrand + ' ' + titleModel).trim()}"
@@ -911,12 +931,27 @@
         });
     }
 
-    function showEmptyState() {
+    function showEmptyState(message = "Автомобілі не знайдено", isError = false) {
         const container = document.getElementById('cars-container');
         const emptyState = document.getElementById('empty-state');
+        const emptyStateTitle = emptyState.querySelector('.empty-state-title');
+        const emptyStateDescription = emptyState.querySelector('.empty-state-description');
+        const resetBtn = document.getElementById('reset-filters-btn');
 
         container.classList.add('hidden');
         emptyState.classList.remove('hidden');
+
+        if (isError) {
+            emptyStateTitle.textContent = "Помилка завантаження";
+            emptyStateDescription.textContent = message;
+            resetBtn.textContent = 'Спробувати ще раз';
+            resetBtn.onclick = loadCars; 
+        } else {
+            emptyStateTitle.textContent = "Автомобілі не знайдено";
+            emptyStateDescription.textContent = "За вашими критеріями пошуку не знайдено доступних авто. Спробуйте змінити дати або параметри пошуку.";
+            resetBtn.textContent = 'Скинути фільтри';
+            resetBtn.onclick = resetFilters;
+        }
     }
 
     function openBookingModal(carId, carName, carPrice) {

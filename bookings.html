@@ -672,8 +672,8 @@
                 <nav class="main-nav">
                     <a href="index.html" class="nav-link">Головна</a>
                     <a href="rent.html" class="nav-link">Прокат авто</a>
-                    <a href="business.html" class="nav-link">Для бізнесу</a>
                     <a href="bookings.html" class="nav-link active">Мої бронювання</a>
+                    <a href="support.html" class="nav-link">Підтримка</a>
                     
                     <div id="auth-buttons" class="user-menu">
                         <a href="login.html" class="btn btn-outline">Увійти</a>
@@ -781,8 +781,8 @@
                     <h3>Навігація</h3>
                     <a href="index.html">Головна</a>
                     <a href="rent.html">Прокат авто</a>
-                    <a href="business.html">Для бізнесу</a>
                     <a href="bookings.html">Мої бронювання</a>
+                    <a href="support.html">Підтримка</a>
                 </div>
                 <div class="footer-section">
                     <h3>Контакти</h3>
@@ -829,6 +829,7 @@
                 
                 try {
                     const user = await apiClient.getCurrentUser();
+                    window.currentUser = user;
                     if (user) {
                         const userAvatar = document.getElementById('user-avatar');
                         const userName = document.getElementById('user-name');
@@ -1006,10 +1007,10 @@
                                 ${booking.status === 'payment_pending' ? 
                                     `<button class="btn btn-success btn-sm" onclick="payBooking(${booking.id})">Оплатити</button>` : ''}
                                 
-                                ${isActive ? 
-                                    `<button class="btn btn-primary btn-sm" onclick="viewBooking(${booking.id})">Деталі</button>` : ''}
-                                
-                                <button class="btn btn-outline btn-sm" onclick="viewBookingDetails(${booking.id})">Переглянути</button>
+                                ${(booking.status === 'pending' || booking.status === 'confirmed') && isUpcoming ? 
+                                    `<button class="btn btn-primary btn-sm" onclick="editBooking(${booking.id})">Редагувати</button>` : ''}
+                                ${booking.status === 'pending' && window.currentUser && window.currentUser.is_staff ? 
+                                    `<button class="btn btn-success btn-sm" onclick="confirmBooking(${booking.id})">Підтвердити</button>` : ''}
                             </div>
                         </div>
                     </div>
@@ -1157,6 +1158,53 @@
 
         function viewBookingDetails(bookingId) {
             showNotification('Функція в розробці', 'info');
+        }
+
+        async function editBooking(bookingId) {
+            try {
+                const booking = await apiClient.getBooking(bookingId);
+                if (!booking) {
+                    showNotification('Бронювання не знайдено', 'error');
+                    return;
+                }
+
+                const newStartDate = prompt('Введіть нову дату початку (YYYY-MM-DD):', booking.start_date);
+                if (!newStartDate) return;
+
+                const newEndDate = prompt('Введіть нову дату завершення (YYYY-MM-DD):', booking.end_date);
+                if (!newEndDate) return;
+
+                const newStatus = prompt('Введіть новий статус (pending/confirmed/cancelled):', booking.status);
+                if (!newStatus) return;
+
+                await apiClient.updateBooking(bookingId, {
+                    start_date: newStartDate,
+                    end_date: newEndDate,
+                    status: newStatus
+                });
+
+                showNotification('Бронювання успішно оновлено', 'success');
+                loadBookings();
+            } catch (error) {
+                console.error('Помилка редагування бронювання:', error);
+                showNotification('Помилка редагування бронювання', 'error');
+            }
+        }
+
+        async function confirmBooking(bookingId) {
+            if (!confirm('Підтвердити це бронювання?')) {
+                return;
+            }
+
+            try {
+                await apiClient.confirmBooking(bookingId);
+                showNotification('Бронювання успішно підтверджено', 'success');
+                loadBookings();
+            } catch (error) {
+                console.error('Помилка підтвердження бронювання:', error);
+                const errorMsg = error.message || 'Помилка підтвердження бронювання';
+                showNotification(errorMsg, 'error');
+            }
         }
 
         function getStatusInfo(status) {

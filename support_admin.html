@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>52Rent — Адмін панель підтримки</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .admin-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .admin-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .admin-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #111;
+        }
+
+        .admin-header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .filters-bar {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-select {
+            padding: 10px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            min-width: 150px;
+        }
+
+        .requests-list {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+
+        .request-item {
+            border: 2px solid #f0f0f0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: border-color 0.3s;
+        }
+
+        .request-item:hover {
+            border-color: #ff9900;
+        }
+
+        .request-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+        }
+
+        .request-subject {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #111;
+            margin-bottom: 5px;
+        }
+
+        .request-user-info {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .request-status {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .status-new {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .status-in_progress {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .status-resolved {
+            background: #e8f5e9;
+            color: #388e3c;
+        }
+
+        .status-closed {
+            background: #f5f5f5;
+            color: #616161;
+        }
+
+        .request-message {
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .messages-container {
+            margin-top: 20px;
+            border-top: 2px solid #f0f0f0;
+            padding-top: 20px;
+            display: none;
+        }
+
+        .messages-container.open {
+            display: block;
+        }
+
+        .messages-list {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        .message-item {
+            margin-bottom: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            background: white;
+        }
+
+        .message-item.admin {
+            background: #fff3e0;
+            border-left: 4px solid #ff9900;
+        }
+
+        .message-item.user {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+        }
+
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .message-author {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .message-time {
+            font-size: 0.85rem;
+            color: #999;
+        }
+
+        .message-text {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .message-form {
+            display: flex;
+            gap: 10px;
+        }
+
+        .message-input {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .message-input:focus {
+            outline: none;
+            border-color: #ff9900;
+        }
+
+        .request-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #ff9900;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #e68a00;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #ff9900;
+            color: #ff9900;
+        }
+
+        .btn-outline:hover {
+            background: #ff9900;
+            color: white;
+        }
+
+        .btn-toggle-messages {
+            background: #f0f0f0;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .btn-toggle-messages:hover {
+            background: #e0e0e0;
+        }
+
+        .status-select {
+            padding: 8px 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <header class="main-header">
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">52Rent</a>
+                
+                <nav class="main-nav">
+                    <a href="index.html" class="nav-link">Головна</a>
+                    <a href="support.html" class="nav-link">Підтримка</a>
+                    <a href="support_admin.html" class="nav-link active">Адмін панель</a>
+                    
+                    <div id="user-menu" class="user-menu">
+                        <div class="user-avatar" id="user-avatar">A</div>
+                        <div class="user-info">
+                            <span class="user-name" id="user-name">Адмін</span>
+                        </div>
+                        <button class="btn btn-outline" id="logout-btn">Вийти</button>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1><i class="fas fa-user-shield"></i> Адмін панель підтримки</h1>
+            <p>Управління запитами користувачів</p>
+        </div>
+
+        <div id="alert-container"></div>
+
+        <div class="filters-bar">
+            <label>Фільтр по статусу:</label>
+            <select id="status-filter" class="filter-select" onchange="loadSupportRequests()">
+                <option value="">Всі</option>
+                <option value="new">Нові</option>
+                <option value="in_progress">В обробці</option>
+                <option value="resolved">Вирішені</option>
+                <option value="closed">Закриті</option>
+            </select>
+        </div>
+
+        <div class="requests-list">
+            <h2>Всі запити</h2>
+            <div id="requests-container">
+                <div class="loading">
+                    <i class="fas fa-spinner fa-spin"></i> Завантаження...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="api-client.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+            loadSupportRequests();
+        });
+
+        function checkAuth() {
+            if (!apiClient.isAuthenticated()) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            apiClient.getCurrentUser().then(user => {
+                if (!user.is_staff) {
+                    window.location.href = 'support.html';
+                    return;
+                }
+
+                const userAvatar = document.getElementById('user-avatar');
+                const userName = document.getElementById('user-name');
+                
+                if (userAvatar && user.username) {
+                    userAvatar.textContent = user.username.charAt(0).toUpperCase();
+                }
+                if (userName) {
+                    userName.textContent = user.username || 'Адмін';
+                }
+            }).catch(console.error);
+
+            const logoutBtn = document.getElementById('logout-btn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function() {
+                    apiClient.logout();
+                    window.location.href = 'index.html';
+                });
+            }
+        }
+
+        async function loadSupportRequests() {
+            const container = document.getElementById('requests-container');
+            if (!container) return;
+
+            try {
+                const requests = await apiClient.getSupportRequests();
+                const statusFilter = document.getElementById('status-filter')?.value || '';
+                
+                let filteredRequests = requests;
+                if (statusFilter) {
+                    filteredRequests = requests.filter(r => r.status === statusFilter);
+                }
+                
+                if (!filteredRequests || filteredRequests.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-inbox"></i>
+                            <h3>Запитів не знайдено</h3>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = filteredRequests.map(request => `
+                    <div class="request-item">
+                        <div class="request-header">
+                            <div>
+                                <div class="request-subject">${escapeHtml(request.subject)}</div>
+                                <div class="request-user-info">
+                                    <i class="fas fa-user"></i> ${escapeHtml(request.user_username)} (${escapeHtml(request.user_email)})
+                                    <button class="btn-outline" style="margin-left: 10px; padding: 5px 10px; font-size: 0.85rem;" onclick="viewUserProfile(${request.user_id})">
+                                        <i class="fas fa-user-circle"></i> Профіль
+                                    </button>
+                                </div>
+                                <div class="request-meta" style="font-size: 0.85rem; color: #999; margin-top: 5px;">
+                                    <span><i class="fas fa-calendar"></i> ${formatDate(request.created_at)}</span>
+                                </div>
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 10px; align-items: flex-end;">
+                                <span class="request-status status-${request.status}">
+                                    ${getStatusText(request.status)}
+                                </span>
+                                <select class="status-select" onchange="updateStatus(${request.id}, this.value)">
+                                    <option value="new" ${request.status === 'new' ? 'selected' : ''}>Нове</option>
+                                    <option value="in_progress" ${request.status === 'in_progress' ? 'selected' : ''}>В обробці</option>
+                                    <option value="resolved" ${request.status === 'resolved' ? 'selected' : ''}>Вирішено</option>
+                                    <option value="closed" ${request.status === 'closed' ? 'selected' : ''}>Закрито</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="request-message">${escapeHtml(request.message)}</div>
+                        <div class="messages-container" id="messages-${request.id}">
+                            <div class="messages-list" id="messages-list-${request.id}">
+                                <div class="loading">Завантаження повідомлень...</div>
+                            </div>
+                            ${request.status !== 'closed' ? `
+                                <form class="message-form" onsubmit="sendMessage(event, ${request.id})">
+                                    <input type="text" class="message-input" id="message-input-${request.id}" 
+                                           placeholder="Введіть відповідь..." required>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-paper-plane"></i> Відправити
+                                    </button>
+                                </form>
+                            ` : ''}
+                        </div>
+                        <div class="request-actions">
+                            <button class="btn-toggle-messages" onclick="toggleMessages(${request.id})">
+                                <i class="fas fa-comments"></i> Діалог
+                            </button>
+                            <button class="btn-outline" onclick="viewUserBookings(${request.user_id})">
+                                <i class="fas fa-calendar-check"></i> Бронювання користувача
+                            </button>
+                            <button class="btn-outline" onclick="viewUserProfile(${request.user_id})">
+                                <i class="fas fa-user"></i> Профіль користувача
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Помилка завантаження запитів:', error);
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>Помилка завантаження запитів</h3>
+                    </div>
+                `;
+            }
+        }
+
+        async function updateStatus(requestId, newStatus) {
+            try {
+                await apiClient.updateSupportRequest(requestId, { status: newStatus });
+                showAlert('Статус оновлено', 'success');
+                loadSupportRequests();
+            } catch (error) {
+                console.error('Помилка оновлення статусу:', error);
+                showAlert('Помилка оновлення статусу', 'error');
+            }
+        }
+
+        function toggleMessages(requestId) {
+            const container = document.getElementById(`messages-${requestId}`);
+            if (!container) return;
+
+            if (container.classList.contains('open')) {
+                container.classList.remove('open');
+            } else {
+                container.classList.add('open');
+                loadMessages(requestId);
+            }
+        }
+
+        async function loadMessages(requestId) {
+            const messagesList = document.getElementById(`messages-list-${requestId}`);
+            if (!messagesList) return;
+
+            try {
+                const messages = await apiClient.getSupportMessages(requestId);
+                
+                if (!messages || messages.length === 0) {
+                    messagesList.innerHTML = `
+                        <div class="empty-state" style="padding: 20px;">
+                            <p>Повідомлень поки немає</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                messagesList.innerHTML = messages.map(msg => `
+                    <div class="message-item ${msg.is_from_admin ? 'admin' : 'user'}">
+                        <div class="message-header">
+                            <span class="message-author">
+                                ${msg.is_from_admin ? '<i class="fas fa-user-shield"></i> Адміністратор' : '<i class="fas fa-user"></i> ' + escapeHtml(msg.author_username)}
+                            </span>
+                            <span class="message-time">${formatDate(msg.created_at)}</span>
+                        </div>
+                        <div class="message-text">${escapeHtml(msg.message)}</div>
+                    </div>
+                `).join('');
+
+                messagesList.scrollTop = messagesList.scrollHeight;
+            } catch (error) {
+                console.error('Помилка завантаження повідомлень:', error);
+                messagesList.innerHTML = `
+                    <div class="empty-state" style="padding: 20px;">
+                        <p>Помилка завантаження повідомлень</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function sendMessage(e, requestId) {
+            e.preventDefault();
+            
+            const input = document.getElementById(`message-input-${requestId}`);
+            if (!input) return;
+
+            const messageText = input.value.trim();
+            if (!messageText) return;
+
+            try {
+                await apiClient.addSupportMessage(requestId, messageText);
+                input.value = '';
+                loadMessages(requestId);
+                loadSupportRequests();
+            } catch (error) {
+                console.error('Помилка відправки повідомлення:', error);
+                showAlert('Помилка відправки повідомлення', 'error');
+            }
+        }
+
+        function showAlert(message, type) {
+            const container = document.getElementById('alert-container');
+            if (!container) return;
+
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            container.innerHTML = '';
+            container.appendChild(alert);
+
+            setTimeout(() => {
+                alert.remove();
+            }, 5000);
+        }
+
+        function getStatusText(status) {
+            const statusMap = {
+                'new': 'Нове',
+                'in_progress': 'В обробці',
+                'resolved': 'Вирішено',
+                'closed': 'Закрито'
+            };
+            return statusMap[status] || status;
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('uk-UA', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        async function viewUserBookings(userId) {
+            try {
+                const bookings = await apiClient.getUserBookings(userId);
+                
+                if (!bookings || bookings.length === 0) {
+                    alert('У користувача немає бронювань');
+                    return;
+                }
+
+                const bookingsList = bookings.map(booking => `
+                    <div style="border: 1px solid #ddd; padding: 15px; margin: 10px 0; border-radius: 8px;">
+                        <strong>${escapeHtml(booking.car_brand || '')} ${escapeHtml(booking.car_name || '')}</strong><br>
+                        <span>Дата: ${formatDate(booking.start_date)} - ${formatDate(booking.end_date)}</span><br>
+                        <span>Статус: ${getBookingStatusText(booking.status)}</span>
+                        ${booking.status === 'pending' ? `
+                            <div style="margin-top: 10px;">
+                                <button class="btn btn-primary" onclick="confirmBooking(${booking.id}, ${userId})" style="padding: 8px 15px; font-size: 0.9rem;">
+                                    <i class="fas fa-check"></i> Підтвердити бронювання
+                                </button>
+                            </div>
+                        ` : ''}
+                    </div>
+                `).join('');
+
+                const modal = document.createElement('div');
+                modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; display: flex; align-items: center; justify-content: center;';
+                modal.innerHTML = `
+                    <div style="background: white; padding: 30px; border-radius: 12px; max-width: 600px; max-height: 80vh; overflow-y: auto; position: relative;">
+                        <button onclick="this.closest('div[style*=\"position: fixed\"]').remove()" style="position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 24px; cursor: pointer;">&times;</button>
+                        <h2>Бронювання користувача</h2>
+                        <div>${bookingsList}</div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+            } catch (error) {
+                console.error('Помилка завантаження бронювань:', error);
+                alert('Помилка завантаження бронювань');
+            }
+        }
+
+        function getBookingStatusText(status) {
+            const statusMap = {
+                'pending': 'Очікує',
+                'confirmed': 'Підтверджено',
+                'cancelled': 'Скасовано'
+            };
+            return statusMap[status] || status;
+        }
+
+        async function confirmBooking(bookingId, userId) {
+            if (!confirm('Підтвердити це бронювання?')) {
+                return;
+            }
+
+            try {
+                await apiClient.confirmBooking(bookingId);
+                showAlert('Бронювання успішно підтверджено', 'success');
+                viewUserBookings(userId);
+            } catch (error) {
+                console.error('Помилка підтвердження бронювання:', error);
+                const errorMsg = error.message || 'Помилка підтвердження бронювання';
+                showAlert(errorMsg, 'error');
+            }
+        }
+
+        function viewUserProfile(userId) {
+            window.location.href = `profile.html?user_id=${userId}`;
+        }
+    </script>
+</body>
+</html>
+
